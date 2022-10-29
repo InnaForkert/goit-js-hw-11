@@ -7,3 +7,17 @@
 * {
   scroll-behavior: smooth;
 }
+
+// body {
+//   max-height: 100vh;
+//   overflow: auto;
+// }
+
+.gallery {
+  height: 100vh;
+  overflow: auto;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

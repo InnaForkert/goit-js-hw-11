@@ -6,6 +6,7 @@ const API_key = '30945884-5d04be7201908102dc9a782a9';
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
+const body = document.querySelector('body');
 const loadMoreBtn = document.querySelector('.load-more');
 let pageNumber;
 form.addEventListener('submit', handleSubmit);
@@ -44,7 +45,7 @@ async function fetchPictures(search) {
     .split(' ')
     .join(
       '+'
-    )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=3&page=${pageNumber}`;
+    )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${pageNumber}`;
   console.log(url);
   const response = await fetch(url);
   const imgs = await response.json();
@@ -95,3 +96,14 @@ async function renderGallery(array) {
     );
   }
 }
+
+gallery.addEventListener('scroll', function () {
+  console.log(
+    gallery.scrollTop,
+    gallery.clientHeight,
+    gallery.scrollHeight - 10
+  );
+  if (gallery.scrollTop + gallery.clientHeight >= gallery.scrollHeight - 10) {
+    loadMore();
+  }
+});
