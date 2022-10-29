@@ -23,7 +23,7 @@ async function handleSubmit(event) {
   Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
   const rendered = await renderGallery(data.hits);
   gallery.innerHTML = rendered.join('');
-  lightbox = new SimpleLightbox('.gallery a');
+  lightbox = new SimpleLightbox('.gallery .gallery-div a');
 }
 
 async function loadMore() {
@@ -51,25 +51,29 @@ function renderGallery(array) {
     Notiflix.Notify.warning(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    gallery.innerHTML = '';
+    if (pageNumber === 1) {
+      gallery.innerHTML = '';
+    }
   } else {
     return array.map(
       img =>
-        `<a href="${img.largeImageURL}"><img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" /></a>        
-        <div class="info">
-          <p class="info-item">
-            <b>Likes</b>${img.likes}
-          </p>
-          <p class="info-item">
-            <b>Views</b>${img.views}
-          </p>
-          <p class="info-item">
-            <b>Comments</b>${img.comments}
-          </p>
-          <p class="info-item">
-            <b>Downloads</b>${img.downloads}
-          </p>
-        </div>;`
+        `<div class="gallery-div">
+          <a class="gallery-link" href="${img.largeImageURL}"><img src="${img.webformatURL}" class="gallery-image" alt="${img.tags}" loading="lazy" /></a>
+          <div class="info">
+            <p class="info-item">
+              <b>Likes</b>${img.likes}
+            </p>
+            <p class="info-item">
+              <b>Views</b>${img.views}
+            </p>
+            <p class="info-item">
+              <b>Comments</b>${img.comments}
+            </p>
+            <p class="info-item">
+              <b>Downloads</b>${img.downloads}
+            </p>
+          </div>
+        </div>`
     );
   }
 }
