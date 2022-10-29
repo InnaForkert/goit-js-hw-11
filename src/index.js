@@ -1,9 +1,8 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+const axios = require('axios').default;
+
 const API_key = '30945884-5d04be7201908102dc9a782a9';
-
-// const url = `https://pixabay.com/api/?key=${API_key}&q=${API_key}&image_type=photo&orientation=horizontal&safesearch=true`;
-
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const body = document.querySelector('body');
@@ -47,25 +46,27 @@ async function fetchPictures(search) {
       '+'
     )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${pageNumber}`;
   console.log(url);
-  const response = await fetch(url);
-  const imgs = await response.json();
+  const imgs = await axios.get(url);
+  console.log(imgs.data.hits);
+  // const imgs = await response.data.json();
   console.log(`"Hooray! We found ${imgs.totalHits} images."`);
 
   if (imgs.totalHits / 40 < pageNumber - 1) {
     console.log("We're sorry, but you've reached the end of search results.");
     return;
   }
-  return imgs.hits.map(img => {
-    return {
-      webformatURL: img.webformatURL,
-      largeImageURL: img.largeImageURL,
-      tags: img.tags,
-      likes: img.likes,
-      views: img.views,
-      comments: img.comments,
-      downloads: img.downloads,
-    };
-  });
+  return imgs.data.hits;
+  // return imgs.hits.map(img => {
+  //   return {
+  //     webformatURL: img.webformatURL,
+  //     largeImageURL: img.largeImageURL,
+  //     tags: img.tags,
+  //     likes: img.likes,
+  //     views: img.views,
+  //     comments: img.comments,
+  //     downloads: img.downloads,
+  //   };
+  // });
 }
 
 async function renderGallery(array) {
