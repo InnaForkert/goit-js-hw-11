@@ -1,4 +1,7 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 const API_key = '30945884-5d04be7201908102dc9a782a9';
+
 // const url = `https://pixabay.com/api/?key=${API_key}&q=${API_key}&image_type=photo&orientation=horizontal&safesearch=true`;
 
 const form = document.querySelector('#search-form');
@@ -20,6 +23,7 @@ async function handleSubmit(event) {
     const data = await fetchPictures(searchQuery);
     const rendered = await renderGallery(data);
     gallery.innerHTML = rendered.join('');
+    const lightbox = new SimpleLightbox('.gallery a');
     loadMoreBtn.classList.remove('visually-hidden');
   } catch (error) {
     console.log(error.message);
@@ -76,23 +80,22 @@ async function renderGallery(array) {
   } else {
     return array.map(
       img =>
-        `<div class="photo-card">
-        <img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" />
-        <div class="info">
-          <p class="info-item">
-            <b>Likes</b>${img.likes}
-          </p>
-          <p class="info-item">
-            <b>Views</b>${img.views}
-          </p>
-          <p class="info-item">
-            <b>Comments</b>${img.comments}
-          </p>
-          <p class="info-item">
-            <b>Downloads</b>${img.downloads}
-          </p>
-        </div>
-      </div>`
+        `<a href="${img.largeImageURL}"><img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" /></a>`
     );
   }
 }
+
+// <div class="info">
+//   <p class="info-item">
+//     <b>Likes</b>${img.likes}
+//   </p>
+//   <p class="info-item">
+//     <b>Views</b>${img.views}
+//   </p>
+//   <p class="info-item">
+//     <b>Comments</b>${img.comments}
+//   </p>
+//   <p class="info-item">
+//     <b>Downloads</b>${img.downloads}
+//   </p>
+// </div>;
