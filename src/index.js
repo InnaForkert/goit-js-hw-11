@@ -44,7 +44,7 @@ async function fetchPictures(search) {
   console.log(url);
   const response = await fetch(url);
   const imgs = await response.json();
-  console.log(imgs);
+  console.log(`"Hooray! We found ${imgs.totalHits} images."`);
 
   if (imgs.totalHits / 40 < pageNumber - 1) {
     console.log("We're sorry, but you've reached the end of search results.");
