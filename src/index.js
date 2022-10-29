@@ -34,19 +34,17 @@ async function handleSubmit(event) {
 async function loadMore() {
   pageNumber += 1;
   const data = await fetchPictures(searchParam);
-  let morePics = '';
-  morePics += await renderGallery(data);
-  gallery.innerHTML = morePics;
+  rendered = await renderGallery(data);
+  gallery.innerHTML += rendered.join('');
   lightbox.refresh();
 }
 
 async function fetchPictures(search) {
-  // pageNumber += 1;
   const url = `https://pixabay.com/api/?key=${API_key}&q=${search.value
     .split(' ')
     .join(
       '+'
-    )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${pageNumber}`;
+    )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=3&page=${pageNumber}`;
   console.log(url);
   const response = await fetch(url);
   const imgs = await response.json();
@@ -67,8 +65,6 @@ async function fetchPictures(search) {
       downloads: img.downloads,
     };
   });
-
-  // console.log(array);
 }
 
 async function renderGallery(array) {
@@ -78,7 +74,6 @@ async function renderGallery(array) {
     );
     gallery.innerHTML = '';
     loadMoreBtn.classList.add('visually-hidden');
-    // pageNumber = 1;
   } else {
     return array.map(
       img =>
