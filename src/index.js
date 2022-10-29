@@ -6,13 +6,11 @@ const axios = require('axios').default;
 const API_key = '30945884-5d04be7201908102dc9a782a9';
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
-const body = document.querySelector('body');
-const loadMoreBtn = document.querySelector('.load-more');
 let pageNumber;
-form.addEventListener('submit', handleSubmit);
-loadMoreBtn.addEventListener('click', loadMore);
 let searchParam;
 let lightbox;
+
+form.addEventListener('submit', handleSubmit);
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -20,40 +18,25 @@ async function handleSubmit(event) {
   let {
     elements: { searchQuery },
   } = event.currentTarget;
-  searchParam = searchQuery;
-
-  try {
-    const data = await fetchPictures(searchQuery);
-    console.log(data);
-    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-    const rendered = await renderGallery(data.hits);
-    gallery.innerHTML = rendered.join('');
-    lightbox = new SimpleLightbox('.gallery a');
-    loadMoreBtn.classList.remove('visually-hidden');
-  } catch (error) {
-    console.log(error.message);
-  }
+  searchParam = searchQuery.value.replaceAll(' ', '+');
+  const data = await fetchPictures(searchParam);
+  Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+  const rendered = await renderGallery(data.hits);
+  gallery.innerHTML = rendered.join('');
+  lightbox = new SimpleLightbox('.gallery a');
 }
 
 async function loadMore() {
   pageNumber += 1;
   const data = await fetchPictures(searchParam);
-  rendered = await renderGallery(data);
+  const rendered = await renderGallery(data);
   gallery.innerHTML += rendered.join('');
   lightbox.refresh();
 }
 
 async function fetchPictures(search) {
-  const url = `https://pixabay.com/api/?key=${API_key}&q=${search.value
-    .split(' ')
-    .join(
-      '+'
-    )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${pageNumber}`;
-  console.log(url);
+  const url = `https://pixabay.com/api/?key=${API_key}&q=${search}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${pageNumber}`;
   const imgs = await axios.get(url);
-  console.log(imgs.data.hits);
-  // const imgs = await response.data.json();
-
   if (imgs.totalHits / 40 < pageNumber - 1) {
     Notiflix.Notify.warning(
       "We're sorry, but you've reached the end of search results."
@@ -61,26 +44,14 @@ async function fetchPictures(search) {
     return;
   }
   return imgs.data;
-  // return imgs.hits.map(img => {
-  //   return {
-  //     webformatURL: img.webformatURL,
-  //     largeImageURL: img.largeImageURL,
-  //     tags: img.tags,
-  //     likes: img.likes,
-  //     views: img.views,
-  //     comments: img.comments,
-  //     downloads: img.downloads,
-  //   };
-  // });
 }
 
-async function renderGallery(array) {
+function renderGallery(array) {
   if (!array.length) {
     Notiflix.Notify.warning(
       'Sorry, there are no images matching your search query. Please try again.'
     );
     gallery.innerHTML = '';
-    loadMoreBtn.classList.add('visually-hidden');
   } else {
     return array.map(
       img =>
