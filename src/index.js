@@ -35,10 +35,21 @@ async function loadMore() {
 }
 
 async function fetchPictures(search) {
-  pageNumber += 1;
-  const url = `https://pixabay.com/api/?key=${API_key}&q=${search.value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=10&page=${pageNumber}`;
+  // pageNumber += 1;
+  const url = `https://pixabay.com/api/?key=${API_key}&q=${search.value
+    .split(' ')
+    .join(
+      '+'
+    )}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${pageNumber}`;
+  console.log(url);
   const response = await fetch(url);
   const imgs = await response.json();
+  console.log(imgs);
+
+  if (imgs.totalHits / 40 < pageNumber - 1) {
+    console.log("We're sorry, but you've reached the end of search results.");
+    return;
+  }
   return imgs.hits.map(img => {
     return {
       webformatURL: img.webformatURL,
@@ -60,6 +71,7 @@ async function renderGallery(array) {
       'Sorry, there are no images matching your search query. Please try again.'
     );
     gallery.innerHTML = '';
+    loadMoreBtn.classList.add('visually-hidden');
     // pageNumber = 1;
   } else {
     return array.map(
