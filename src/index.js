@@ -1,13 +1,86 @@
 const API_key = '30945884-5d04be7201908102dc9a782a9';
-const url = `https://pixabay.com/api/?key=${API_key}&q=${API_key}&image_type=photo&orientation=horizontal&safesearch=true`;
+// const url = `https://pixabay.com/api/?key=${API_key}&q=${API_key}&image_type=photo&orientation=horizontal&safesearch=true`;
 
 const form = document.querySelector('#search-form');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
+let pageNumber;
 form.addEventListener('submit', handleSubmit);
+loadMoreBtn.addEventListener('click', loadMore);
+let searchParam;
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
+  pageNumber = 1;
   let {
     elements: { searchQuery },
   } = event.currentTarget;
-  console.log(searchQuery.value);
+  searchParam = searchQuery;
+  try {
+    const data = await fetchPictures(searchQuery);
+    const rendered = await renderGallery(data);
+    gallery.innerHTML = rendered.join('');
+    loadMoreBtn.classList.remove('visually-hidden');
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+async function loadMore() {
+  pageNumber += 1;
+  const data = await fetchPictures(searchParam);
+  let morePics = '';
+  morePics += await renderGallery(data);
+  gallery.innerHTML = morePics;
+}
+
+async function fetchPictures(search) {
+  pageNumber += 1;
+  const url = `https://pixabay.com/api/?key=${API_key}&q=${search.value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=10&page=${pageNumber}`;
+  const response = await fetch(url);
+  const imgs = await response.json();
+  return imgs.hits.map(img => {
+    return {
+      webformatURL: img.webformatURL,
+      largeImageURL: img.largeImageURL,
+      tags: img.tags,
+      likes: img.likes,
+      views: img.views,
+      comments: img.comments,
+      downloads: img.downloads,
+    };
+  });
+
+  // console.log(array);
+}
+
+async function renderGallery(array) {
+  if (!array.length) {
+    console.log(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+    gallery.innerHTML = '';
+    // pageNumber = 1;
+  } else {
+    return array.map(
+      img =>
+        `<div class="photo-card">
+        <img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" />
+        <div class="info">
+          <p class="info-item">
+            <b>Likes</b>${img.likes}
+          </p>
+          <p class="info-item">
+            <b>Views</b>${img.views}
+          </p>
+          <p class="info-item">
+            <b>Comments</b>${img.comments}
+          </p>
+          <p class="info-item">
+            <b>Downloads</b>${img.downloads}
+          </p>
+        </div>
+      </div>`
+    );
+  }
 }
