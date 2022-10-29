@@ -20,7 +20,9 @@ async function handleSubmit(event) {
   } = event.currentTarget;
   searchParam = searchQuery.value.replaceAll(' ', '+');
   const data = await fetchPictures(searchParam);
-  Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+  if (data.totalHits) {
+    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+  }
   const rendered = await renderGallery(data.hits);
   gallery.innerHTML = rendered.join('');
   lightbox = new SimpleLightbox('.gallery .gallery-div a');
