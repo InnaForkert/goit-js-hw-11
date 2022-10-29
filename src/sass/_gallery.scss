@@ -40,5 +40,23 @@
     &:hover {
       cursor: zoom-in;
     }
+    &:hover + .info {
+      opacity: 0;
+    }
   }
+}
+
+.info {
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+
+  display: flex;
+  gap: 10px;
+
+  padding-inline: 15px;
+
+  background-color: $accent-color;
+
+  transition: opacity 300ms ease-in-out;
 }
