@@ -11,6 +11,7 @@ let pageNumber;
 form.addEventListener('submit', handleSubmit);
 loadMoreBtn.addEventListener('click', loadMore);
 let searchParam;
+let lightbox;
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -23,7 +24,7 @@ async function handleSubmit(event) {
     const data = await fetchPictures(searchQuery);
     const rendered = await renderGallery(data);
     gallery.innerHTML = rendered.join('');
-    const lightbox = new SimpleLightbox('.gallery a');
+    lightbox = new SimpleLightbox('.gallery a');
     loadMoreBtn.classList.remove('visually-hidden');
   } catch (error) {
     console.log(error.message);
@@ -36,6 +37,7 @@ async function loadMore() {
   let morePics = '';
   morePics += await renderGallery(data);
   gallery.innerHTML = morePics;
+  lightbox.refresh();
 }
 
 async function fetchPictures(search) {
@@ -80,22 +82,21 @@ async function renderGallery(array) {
   } else {
     return array.map(
       img =>
-        `<a href="${img.largeImageURL}"><img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" /></a>`
+        `<a href="${img.largeImageURL}"><img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" /></a>        
+        <div class="info">
+          <p class="info-item">
+            <b>Likes</b>${img.likes}
+          </p>
+          <p class="info-item">
+            <b>Views</b>${img.views}
+          </p>
+          <p class="info-item">
+            <b>Comments</b>${img.comments}
+          </p>
+          <p class="info-item">
+            <b>Downloads</b>${img.downloads}
+          </p>
+        </div>;`
     );
   }
 }
-
-// <div class="info">
-//   <p class="info-item">
-//     <b>Likes</b>${img.likes}
-//   </p>
-//   <p class="info-item">
-//     <b>Views</b>${img.views}
-//   </p>
-//   <p class="info-item">
-//     <b>Comments</b>${img.comments}
-//   </p>
-//   <p class="info-item">
-//     <b>Downloads</b>${img.downloads}
-//   </p>
-// </div>;
