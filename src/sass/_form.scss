@@ -1,0 +1,41 @@
+.search-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  gap: 30px;
+
+  padding: 20px;
+
+  background-color: $main-color;
+  border-radius: 0 0 10px 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+#input {
+  width: 40%;
+  padding: 8px;
+  border-radius: 14px;
+  border: 2px solid $border;
+  background-color: $accent-color;
+}
+
+button {
+  min-width: 100px;
+  border-radius: 14px;
+  background-color: $accent-color;
+  border: 2px solid $border;
+  color: $border;
+
+  transition-property: background-color, color, box-shadow;
+  transition-duration: 250ms;
+  &:hover,
+  &:focus {
+    background-color: $accent;
+    color: $accent-color;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  }
+}
