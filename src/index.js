@@ -32,7 +32,9 @@ async function loadMore() {
   pageNumber += 1;
   const data = await fetchPictures(searchParam);
   console.log(data);
-  const rendered = await renderGallery(data);
+  const rendered = await renderGallery(data.hits);
+  console.log(rendered);
+
   gallery.innerHTML += rendered.join('');
   lightbox.refresh();
 }
@@ -82,11 +84,6 @@ function renderGallery(array) {
 }
 
 gallery.addEventListener('scroll', function () {
-  console.log(
-    gallery.scrollTop,
-    gallery.clientHeight,
-    gallery.scrollHeight - 10
-  );
   if (gallery.scrollTop + gallery.clientHeight >= gallery.scrollHeight - 10) {
     loadMore();
   }
