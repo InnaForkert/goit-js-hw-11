@@ -31,6 +31,7 @@ async function handleSubmit(event) {
 async function loadMore() {
   pageNumber += 1;
   const data = await fetchPictures(searchParam);
+  console.log(data);
   const rendered = await renderGallery(data);
   gallery.innerHTML += rendered.join('');
   lightbox.refresh();
