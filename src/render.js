@@ -1,15 +1,4 @@
-import Notiflix from 'notiflix';
-
 export function renderGallery(array, pageNumber) {
-  if (!array.length) {
-    Notiflix.Notify.warning(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-    if (pageNumber === 1) {
-      gallery.innerHTML = '';
-    }
-    return;
-  }
   return array.map(
     img =>
       `<div class="gallery-div">
